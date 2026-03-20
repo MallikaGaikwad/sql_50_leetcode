@@ -12,21 +12,16 @@ select
     customer_id,
     order_date,
     customer_pref_delivery_date,
-    row_number() over (partition by customer_id order by order_date) as row_num,
-    case
-        when order_date = customer_pref_delivery_date 
-        then 'immediate'
-        else 'scheduled'
-    end as status
+    row_number() over (partition by customer_id order by order_date) as row_num
 from delivery
 )
 
 select 
     round(
-        100 * 
-        coalesce(1.0 * count(case when status='immediate' then status else null end),0) 
+    100 * 
+        1.0 * sum(case when order_date = customer_pref_delivery_date then 1 else 0 end) 
         / 
-        nullif(count(*),0)
+        count(*)
     ,2) as immediate_percentage
 from order_rank
 where row_num = 1
