@@ -10,7 +10,7 @@ select
     year,
     quantity,
     price,
-    dense_rank() over (partition by product_id order by year) as rank_sales
+    rank() over (partition by product_id order by year) as rank_sales
 from sales
 )
 
