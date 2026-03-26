@@ -10,15 +10,14 @@ select
     year,
     quantity,
     price,
-    rank() over (partition by product_id order by year) as rank_sales
+    min(year) over (partition by product_id) as min_yr
 from sales
 )
 
 select 
     product_id,
-    year as first_year,
+    min_yr as first_year,
     quantity,
     price
-from first_yr 
-where rank_sales = 1
-group by product_id, year, quantity, price
+from first_yr
+where min_yr= year
