@@ -35,7 +35,7 @@ select
     department_id
 from pf_y
 
-union
+union all
 
 select 
     employee_id,
