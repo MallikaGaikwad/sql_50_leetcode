@@ -11,25 +11,55 @@
 
 -- '2019-08-16'
 
+-- select 
+--     product_id,
+--     new_price as price
+-- from products
+-- where (product_id, change_date) IN 
+--     (select product_id, max(change_date) as change_date
+--     from products
+--     where change_date <= '2019-08-16'
+--     group by product_id)
+
+
+-- union all
+
+-- select distinct
+--     product_id,
+--     10 as price
+-- from products 
+-- where (product_id) NOT IN 
+--     (select product_id
+--     from products
+--     where change_date <= '2019-08-16'
+--     group by product_id)
+
+with row_num as (
+select
+    product_id,
+    new_price as price,
+    row_number() over (partition by product_id order by change_date desc) as row_num
+from products 
+where change_date <= '2019-08-16'
+),
+
+first_value as (
 select 
     product_id,
-    new_price as price
+    price
+from row_num 
+where row_num =1
+),
+
+all_products as (
+select 
+    distinct product_id
 from products
-where (product_id, change_date) IN 
-    (select product_id, max(change_date) as change_date
-    from products
-    where change_date <= '2019-08-16'
-    group by product_id)
+)
 
-
-union all
-
-select distinct
-    product_id,
-    10 as price
-from products 
-where (product_id) NOT IN 
-    (select product_id
-    from products
-    where change_date <= '2019-08-16'
-    group by product_id)
+select 
+    b.product_id,
+    coalesce (a.price, 10) as price
+from first_value as a
+right join all_products as b
+on a.product_id = b.product_id
