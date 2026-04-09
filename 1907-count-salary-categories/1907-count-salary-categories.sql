@@ -16,7 +16,7 @@ union
 
 select 
     'Average Salary' as category,
-    coalesce(count(account_id),0) as accounts_count
+    count(account_id) as accounts_count
 from accounts
 where income >= 20000 and income <= 50000
 
