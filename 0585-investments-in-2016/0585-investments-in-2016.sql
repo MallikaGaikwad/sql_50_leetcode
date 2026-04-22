@@ -28,11 +28,12 @@ select
     lat, 
     lon
 from tiv_2015_all 
-where lat || '-' || lon  NOT IN
-(select lat || '-' || lon 
-from insurance 
-group by lat, lon
-having count(lat || '-' || lon ) > 1)
+WHERE (lat, lon) IN (
+    SELECT lat, lon
+    FROM insurance
+    GROUP BY lat, lon
+    HAVING COUNT(*) = 1
+)
 )
 
 select 
