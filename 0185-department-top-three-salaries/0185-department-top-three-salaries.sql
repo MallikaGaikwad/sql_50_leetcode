@@ -10,7 +10,7 @@ select
     d.name as Department,
     dense_rank() over (partition by d.name order by e.salary desc) as sal_rank
 from employee as e
-join department as d
+left join department as d
 on e.departmentID = d.id
 )
 
