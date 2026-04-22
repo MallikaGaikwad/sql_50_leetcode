@@ -4,7 +4,6 @@
 
 with join_table as (
 select 
-    e.id as e_id, 
     e.name as Employee, 
     e.salary as Salary, 
     d.name as Department,
